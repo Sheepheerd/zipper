@@ -13,3 +13,7 @@
 ## AI model
 
 ## Output
+
+
+## Websites
+- [puzzles](https://tryhardguides.com/linkedin-zip-answer-today/)

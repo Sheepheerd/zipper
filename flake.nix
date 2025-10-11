@@ -1,67 +1,34 @@
 {
-  description = "A Nix-flake-based Python development environment";
+  description = "Develop Python on Nix with uv";
 
-  inputs.nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  };
 
   outputs =
-    inputs:
+    { nixpkgs, ... }:
     let
-      supportedSystems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      forEachSupportedSystem =
-        f:
-        inputs.nixpkgs.lib.genAttrs supportedSystems (
-          system:
-          f {
-            pkgs = import inputs.nixpkgs { inherit system; };
-          }
-        );
-
-      version = "3.13";
+      inherit (nixpkgs) lib;
+      forAllSystems = lib.genAttrs lib.systems.flakeExposed;
     in
     {
-      devShells = forEachSupportedSystem (
-        { pkgs }:
+      devShells = forAllSystems (
+        system:
         let
-          concatMajorMinor =
-            v:
-            pkgs.lib.pipe v [
-              pkgs.lib.versions.splitVersion
-              (pkgs.lib.sublist 0 2)
-              pkgs.lib.concatStrings
-            ];
-
-          python = pkgs."python${concatMajorMinor version}";
+          pkgs = nixpkgs.legacyPackages.${system};
         in
         {
           default = pkgs.mkShell {
-            venvDir = ".venv";
-
-            postShellHook = ''
-              venvVersionWarn() {
-              	local venvVersion
-              	venvVersion="$("$venvDir/bin/python" -c 'import platform; print(platform.python_version())')"
-
-              	[[ "$venvVersion" == "${python.version}" ]] && return
-
-              	cat <<EOF
-              Warning: Python version mismatch: [$venvVersion (venv)] != [${python.version}]
-                       Delete '$venvDir' and reload to rebuild for version ${python.version}
-              EOF
-              }
-
-              venvVersionWarn
-            '';
-
-            packages = with python.pkgs; [
-              venvShellHook
-              pip
-
+            packages = [
+              pkgs.python3
+              pkgs.uv
             ];
+
+            shellHook = ''
+              unset PYTHONPATH
+              uv sync
+              . .venv/bin/activate
+            '';
           };
         }
       );
