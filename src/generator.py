@@ -17,6 +17,7 @@ class ZipPuzzle:
         self.path = []
         self.visited = set()
         self.dot_count = dot_count or max(4, grid_size // 2)
+        self._last_dots = []
 
     def generate_path(self):
         self.path = []
@@ -43,7 +44,6 @@ class ZipPuzzle:
             if self._hamiltonian_path(n):
                 return True
 
-        # Backtrack
         self.visited.remove(key)
         self.path.pop()
         self.grid[pos.y][pos.x] = False
@@ -71,11 +71,19 @@ class ZipPuzzle:
             raise ValueError("Path not generated yet.")
         dots = []
         total = len(self.path)
-        dots.append(Dot(self.path[0], 1))
+
+        first_index = random.randint(0, total//4)  
+        dots.append(Dot(self.path[first_index], 1))
+
         for i in range(1, self.dot_count-1):
-            index = i * (total-1)//(self.dot_count-1)
+            index = first_index + i * (total - first_index) // (self.dot_count - 1)
+            index = min(index, total-2)
             dots.append(Dot(self.path[index], i+1))
+
+        # last dot is always at end
         dots.append(Dot(self.path[-1], self.dot_count))
+
+        self._last_dots = dots
         return dots
 
     def print_puzzle(self, dots):
@@ -89,4 +97,55 @@ class ZipPuzzle:
                     row.append(" .")
             print(" ".join(row))
 
+    def dots_to_2d(self, dots):
+        col = []
+        dot_map = {(d.position.x, d.position.y): d.number for d in dots}
+        for y in range(self.grid_size):
+            row = []
+            for x in range(self.grid_size):
+                if (x,y) in dot_map:
+                    row.append(f"{dot_map[(x,y)]:2}")
+                else:
+                    row.append(" .")
+            col.append(row)
+
+        return col
+
+    def number_to_position(self, number, dots=None):
+        """
+        Return the (x,y) coordinates of a dot with the given number.
+        If dots is None, uses the last generated dots.
+        """
+        if dots is None:
+            if not hasattr(self, "_last_dots") or not self._last_dots:
+                raise ValueError("No dots generated yet.")
+            dots = self._last_dots
+        for d in dots:
+            if d.number == number:
+                return (d.position.x, d.position.y)
+        raise ValueError(f"Dot with number {number} not found.")
+
+    def distance_to_next_number(self, number, dots=None):
+        """
+        Return the Manhattan distance from the current number to the next number in the sequence.
+        """
+        if dots is None:
+            if not hasattr(self, "_last_dots") or not self._last_dots:
+                raise ValueError("No dots generated yet.")
+            dots = self._last_dots
+
+        # find current and next
+        current_pos = None
+        next_pos = None
+        for d in dots:
+            if d.number == number:
+                current_pos = d.position
+            if d.number == number + 1:
+                next_pos = d.position
+        if current_pos is None:
+            raise ValueError(f"Dot with number {number} not found.")
+        if next_pos is None:
+            return 0  # or None, if this is the last number
+        # Manhattan distance
+        return abs(current_pos.x - next_pos.x) + abs(current_pos.y - next_pos.y)
 
