@@ -13,13 +13,6 @@ def main():
 
 
 
-        player = ZipPlayer(board)
-        player.print_board()
-        player.move("right")
-        player.print_board()
-        player.move("down")
-        player.print_board()
-        # print(puzzle.number_to_position(1))
     else:
         print("Failed to generate puzzle.")
 
