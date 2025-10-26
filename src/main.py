@@ -1,5 +1,15 @@
+from generator import ZipPuzzle
+
+grid_size = 6
+puzzle = ZipPuzzle(grid_size, dot_count=10)
+
 def main():
-    print("Gooberhead {0}".format("goober"))
+    if puzzle.generate_path():
+        dots = puzzle.generate_dots()
+        print(f"Generated Zip Puzzle ({grid_size}x{grid_size}):")
+        puzzle.print_puzzle(dots)
+    else:
+        print("Failed to generate puzzle.")
 
 if __name__ == "__main__":
     main()
