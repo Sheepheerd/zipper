@@ -1,20 +1,13 @@
-from generator import ZipPuzzle
-from player import ZipPlayer
-
-grid_size = 6
-puzzle = ZipPuzzle(grid_size, dot_count=10)
-
-def main():
-    if puzzle.generate_path():
-        dots = puzzle.generate_dots()
-        print(f"Generated Zip Puzzle ({grid_size}x{grid_size}):")
-        puzzle.print_puzzle(dots)
-        board = puzzle.dots_to_2d(dots)
+# from wayland_automation.mouse_controller import Mouse
+#
+# mouse = Mouse()
+# mouse.click(100, 200, button="left")  # Perform a left click
+# mouse.swipe(100, 200, 400, 500, speed=.1)
 
 
 
-    else:
-        print("Failed to generate puzzle.")
+# We need to write a program that will take an image, and create
+# a list of instruction to execute
 
-if __name__ == "__main__":
-    main()
+
+
