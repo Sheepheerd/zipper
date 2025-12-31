@@ -1,18 +1,13 @@
 ## Idea
 
-- Capture an image of the board
-- Turn board into an array
-- Pass board into ai
-- Have ai solve board and come up with the optimal arrow key inputs
-- Send inputs into page
+- Get a list of instructions to perform from a solution board
+- Execute those instructions on screen (move cursor and click essentially).
 
-## Capture Image
+## Get Image
 
-## Board to Array
+## Retrieve Instructions
 
-## AI model
-
-## Output
+## Execute Instructions
 
 
 ## Websites
