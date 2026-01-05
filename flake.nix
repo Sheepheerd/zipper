@@ -96,6 +96,8 @@
           pkgs = nixpkgs.legacyPackages.${system};
 
           python = pkgs.python312.withPackages (ps: [
+            ps.numpy
+            ps.pillow
             ps.evdev
             self.packages.${system}.wayland-automation
           ]);
