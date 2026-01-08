@@ -99,6 +99,7 @@
             ps.numpy
             ps.pillow
             ps.evdev
+            ps.opencv4
             ps.scikit-learn
             self.packages.${system}.wayland-automation
           ]);
