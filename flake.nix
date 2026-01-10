@@ -99,10 +99,7 @@
             ps.numpy
             ps.pillow
             ps.evdev
-            ps.opencv4
-            ps.scikit-learn
-            ps.easyocr
-            ps.pytesseract
+            ps.requests
             self.packages.${system}.wayland-automation
           ]);
         in
@@ -114,7 +111,7 @@
               pkgs.wtype
               self.packages.${system}.wl-find-cursor
               pkgs.feh
-              pkgs.tesseract
+              pkgs.slurp
             ];
           };
         }
