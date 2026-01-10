@@ -101,6 +101,8 @@
             ps.evdev
             ps.opencv4
             ps.scikit-learn
+            ps.easyocr
+            ps.pytesseract
             self.packages.${system}.wayland-automation
           ]);
         in
@@ -112,6 +114,7 @@
               pkgs.wtype
               self.packages.${system}.wl-find-cursor
               pkgs.feh
+              pkgs.tesseract
             ];
           };
         }

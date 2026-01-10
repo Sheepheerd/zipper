@@ -152,32 +152,35 @@ def chunk_edge_activity(chunk):
 
 
 
-def find_starting_chunk(chunks):
+def find_starting_chunk(chunks, direction="top"):
     """
-    The starting chunk is defined as:
-    - Non-empty
-    - Has content touching exactly ONE edge
+    Finds first non-empty chunk with exactly one active edge,
+    searching either from top or from bottom.
     """
     grid_size = len(chunks)
+    
+    if direction == "top":
+        rows = range(grid_size)
+        cols = range(grid_size)
+    elif direction == "bottom":
+        rows = reversed(range(grid_size))
+        cols = reversed(range(grid_size))  
+    else:
+        raise ValueError(f"Invalid direction: {direction}. Use 'top' or 'bottom'.")
 
-    for r in range(grid_size):
-        for c in range(grid_size):
+    for r in rows:
+        for c in cols:
             chunk = chunks[r][c]
-
             if chunk_is_empty(chunk):
                 continue
-
-            edges, active_edges = chunk_edge_activity(chunk)
-
-            if active_edges == 1:
-                return {
-                    "row": r,
-                    "col": c,
-                    "edge": next(k for k, v in edges.items() if v),
-                }
-
+                
+            edges, active_count = chunk_edge_activity(chunk)
+            
+            if active_count == 1:
+                edge = next(iter(k for k, v in edges.items() if v))
+                return {"row": r, "col": c, "edge": edge}
+                
     return None
-
 
 def split_into_chunks(arr, grid_size):
     """
@@ -211,15 +214,18 @@ if __name__ == "__main__":
 
     chunks = split_into_chunks(arr, grid_size)
 
-    start = find_starting_chunk(chunks)
+    start_top = find_starting_chunk(chunks, "top")
+    start_bottom = find_starting_chunk(chunks,"bottom")
 
-    if start is None:
-        raise RuntimeError("No valid starting chunk found")
 
     edge_map = build_edge_map(chunks)
 
-    path_grid = trace_path(start, edge_map)
+    path_grid = trace_path(start_top, edge_map)
 
-    # Step 6: Output result
+    for row in path_grid:
+        print(row)
+
+    path_grid = trace_path(start_bottom, edge_map)
+
     for row in path_grid:
         print(row)
