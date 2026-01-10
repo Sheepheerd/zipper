@@ -1,5 +1,6 @@
 from modules import Zip
 from solver import Solver
+from modules import Downloader
 
 
 def main():
@@ -11,20 +12,20 @@ def main():
     choice = input("> ").strip()
 
     solver = Solver()
-
+    downloader = Downloader()
     if choice == "1":
         zip_mode = Zip()
-        filename = zip_mode.download_image()
+        filename = downloader.download_image("Zip")
         grid_path = zip_mode.build_instructions(filename)
 
     # elif choice == "2":
     #     queens_mode = Queens()
-    #     filename = queens_mode.download_image()
+    #     filename = downloader.download_image("queens")
     #     grid_path = queens_mode.build_instructions(filename)
     #
     # elif choice == "3":
     #     tango_mode = Tango()
-    #     filename = tango_mode.download_image()
+    #     filename = downloader.download_image("Tango")
     #     grid_path = tango_mode.build_instructions(filename)
 
     else:
