@@ -1,4 +1,4 @@
-from modules import Zip, Tango
+from modules import Zip, Tango, Queens
 from solver import Solver
 from modules import Downloader
 
@@ -19,10 +19,10 @@ def main():
         filename = downloader.download_image("Zip")
         grid_path, grid_size = zip_mode.build_instructions(filename)
 
-    # elif choice == "2":
-    #     queens_mode = Queens()
-    #     filename = downloader.download_image("queens")
-    #     grid_path = queens_mode.build_instructions(filename)
+    elif choice == "2":
+        queens_mode = Queens()
+        filename = downloader.download_image("queens")
+        grid_path = queens_mode.build_instructions(filename)
 
     elif choice == "3":
         tango_mode = Tango()
@@ -33,7 +33,7 @@ def main():
         print("Invalid selection.")
         return
 
-    solver.solve(grid_path, grid_size)
+    # solver.solve(grid_path, grid_size)
 
 
 
