@@ -14,7 +14,7 @@ class Tango:
 
         
         path = create_path(chunks)
-        return path
+        return path, 6
 
 
 def analyze_image(path):
@@ -57,7 +57,7 @@ def create_path(chunks):
     """
     Build a path from a 6x6 grid of 70x70 arrays based on WHITE_THRESHOLD.
     """
-    x, y = 35, 30
+    x, y = 30, 30
     path = []
 
     for i in range(len(chunks)):

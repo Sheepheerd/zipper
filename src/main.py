@@ -27,7 +27,7 @@ def main():
     elif choice == "3":
         tango_mode = Tango()
         filename = downloader.download_image("Tango")
-        grid_path = tango_mode.build_instructions(filename)
+        grid_path, grid_size = tango_mode.build_instructions(filename)
 
     else:
         print("Invalid selection.")
