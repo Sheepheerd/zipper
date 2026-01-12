@@ -29,7 +29,7 @@
             src = pkgs.fetchFromGitHub {
               owner = "cjacker";
               repo = "wl-find-cursor";
-              rev = "master";
+              rev = "44b1317141c8cc64e9da3bde56402008aca8f372";
               hash = "sha256-hCnydOVK1hKjEO9KzXAS8pjHY6Myrh3wqZ9khrkDJkA=";
             };
 
