@@ -29,15 +29,17 @@ class Zip:
 
         chunks = split_into_chunks(arr, grid_size)
 
-        start_top = find_starting_chunk(chunks, "top")
-        # start_bottom = find_starting_chunk(chunks,"bottom")
+        # start_top = find_starting_chunk(chunks, "top")
+        start_bottom = find_starting_chunk(chunks,"bottom")
 
 
         edge_map = build_edge_map(chunks)
 
-        path_grid = trace_path(start_top, edge_map)
-        # path_grid = trace_path(start_bottom, edge_map)
-        return path_grid
+        # path_grid = trace_path(start_top, edge_map)
+        path_grid = trace_path(start_bottom, edge_map)
+        print(path_grid)
+        return path_grid, grid_size
+
 
 
 
@@ -79,12 +81,12 @@ def analyze_image(path):
     arr = np.asarray(img, dtype=np.float32) / 255.0
 
     # middle of the image
-    x, y = 206, 192
+    x, y = 205, 205
 
     x = min(x, arr.shape[1] - 1)
     y = min(y, arr.shape[0] - 1)
 
-    if arr[y, x] >= WHITE_THRESHOLD:
+    if arr[205, 205] >= WHITE_THRESHOLD:
         grid_size = 6
     else:
         grid_size = 7
@@ -108,20 +110,27 @@ def build_edge_map(chunks):
 
 
 def trace_path(start, edge_map):
-    grid_size = len(edge_map)
-
-    path_grid = [[-1]*grid_size for _ in range(grid_size)]
-
+    """
+    Traces a single non-branching path through the grid.
+    
+    Args:
+        start: dict with 'row', 'col', and 'edge' (entry edge)
+        edge_map: grid_size × grid_size × dict of {edge_dir: bool}
+    
+    Returns:
+        list of (row, col) tuples in visit order, starting with the start position
+    """
+    path = []
     r, c = start["row"], start["col"]
     entry_edge = OPPOSITE[start["edge"]]
-    step = 0
+    
+    path.append((r, c))
+
+    grid_size = len(edge_map)
 
     while True:
-        path_grid[r][c] = step
-        step += 1
-
         edges = edge_map[r][c]
-
+        
         exit_edges = [
             e for e, active in edges.items()
             if active and e != entry_edge
@@ -131,7 +140,7 @@ def trace_path(start, edge_map):
             break
 
         if len(exit_edges) > 1:
-            raise RuntimeError("Branching path detected")
+            raise RuntimeError("Branching path detected at ({}, {})".format(r, c))
 
         exit_edge = exit_edges[0]
         dr, dc = DIRECTIONS[exit_edge]
@@ -141,9 +150,10 @@ def trace_path(start, edge_map):
             break
 
         r, c = nr, nc
-        entry_edge = OPPOSITE[exit_edge]
-
-    return path_grid
+        entry_edge = OPPOSITE[exit_edge] 
+       
+        path.append((r, c))
+    return path
 
 def chunk_is_empty(chunk):
     """

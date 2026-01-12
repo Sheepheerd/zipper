@@ -112,6 +112,7 @@
               self.packages.${system}.wl-find-cursor
               pkgs.feh
               pkgs.slurp
+              pkgs.gimp
             ];
           };
         }

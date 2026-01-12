@@ -9,7 +9,14 @@ class Downloader:
         """
 
         REFERENCE_DATE = datetime(2026, 1, 9)
-        REFERENCE_NUMBER = 298
+        if choice == "Zip":
+            REFERENCE_NUMBER = 298
+        elif choice == "queens":
+            REFERENCE_NUMBER = 0
+        elif choice == "Tango":
+            REFERENCE_NUMBER = 459
+        else:
+            REFERENCE_NUMBER = 0
 
         today = datetime.now().date()
         today_dt = datetime.combine(today, datetime.min.time())

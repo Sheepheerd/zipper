@@ -5,14 +5,13 @@ import time
 
 DELAY_BETWEEN_CLICKS = 0.01
 SCALE_FACTOR = 1.6
-GRID_SIZE = 7
 
 
 class Solver:
     def __init__(self) -> None:
         self.mouse = Mouse()
 
-    def solve(self, path_grid):
+    def solve(self, path_grid, grid_size):
         result = get_selection()
         if result is None:
             return
@@ -27,24 +26,20 @@ class Solver:
 
         # WRAP IN FOR LOOP TO PRESS EACH COL IN THE CORRECT ORDER
 
-
-        for i in range(GRID_SIZE * GRID_SIZE):
-            target_row, target_col = find_position(path_grid, i)
+        # CHANGE THIS SO THAT IT LOOPS OVER EVERY PLACE TO CLICK, NOT GRIDE_SIZE
+        for target_row, target_col in path_grid:
+            # CHANGE THIS SO THAT PATH_GRID IS REALLY A TUPLE OF (target_row, target_col) and the first value is the first place to click.
             click_x, click_y = get_grid_cell(
                 log_x, log_y, log_w, log_h,
                 grid_x=target_col,
                 grid_y=target_row,
-                grid_size=GRID_SIZE
+                grid_size=grid_size
             )
 
-            print(f"→ {i}/{len(path_grid)}   Cell [{target_col},{target_row}] "
-                  f"→ physical ({click_x}, {click_y})")
 
             self.mouse.click(click_x, click_y, button="left")
 
-            if i < GRID_SIZE * GRID_SIZE:
-                print("   waiting...")
-                time.sleep(DELAY_BETWEEN_CLICKS)
+            time.sleep(DELAY_BETWEEN_CLICKS)
 
         print("\nSequence complete! ✓")
 
@@ -84,9 +79,3 @@ def get_grid_cell(x: int, y: int, w: int, h: int, grid_x: int, grid_y: int, grid
     return to_physical(center_x, center_y)
 
 
-def find_position(grid, target):
-    for row_idx, row in enumerate(grid):
-        for col_idx, value in enumerate(row):
-            if value == target:
-                return row_idx, col_idx
-    return None 
