@@ -93,13 +93,24 @@
       devShells = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [
+              (final: prev: {
+                opencv4 = prev.opencv4.override {
+                  enableGtk3 = true;
+                  enablePython = true;
+                };
+              })
+            ];
+          };
 
           python = pkgs.python312.withPackages (ps: [
             ps.numpy
             ps.pillow
             ps.evdev
             ps.requests
+            ps.opencv4
             self.packages.${system}.wayland-automation
           ]);
         in
@@ -113,7 +124,13 @@
               pkgs.feh
               pkgs.slurp
               pkgs.gimp
+              pkgs.pkg-config
+              pkgs.stdenv.cc.cc.lib
             ];
+            shellHook = ''
+              export LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH
+              echo "Python environment ready with OpenCV $(python -c 'import cv2; print(cv2.__version__)')"
+            '';
           };
         }
       );
