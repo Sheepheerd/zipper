@@ -98,8 +98,10 @@
             overlays = [
               (final: prev: {
                 opencv4 = prev.opencv4.override {
-                  enableGtk3 = true;
-                  enablePython = true;
+                  # enableGtk3 = true;
+                  # enablePython = true;
+                  enableGtk3 = false;
+                  enablePython = false;
                 };
               })
             ];
