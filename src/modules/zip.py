@@ -1,5 +1,6 @@
 from PIL import Image
 import numpy as np
+import cv2
 
 
 TARGET_SIZE = 420
@@ -8,6 +9,8 @@ GRID_7 = 7
 CHUNK_6 = 70
 CHUNK_7 = 60
 WHITE_THRESHOLD = 0.95
+
+TEMPLATE_DIR = 'templates/zip'
 
 DIRECTIONS = {
     "top":    (-1,  0),
@@ -29,16 +32,52 @@ class Zip:
 
         chunks = split_into_chunks(arr, grid_size)
 
-        # start_top = find_starting_chunk(chunks, "top")
-        start_bottom = find_starting_chunk(chunks,"bottom")
+        start_chunk = find_starting_chunk(chunks, filename)
 
 
         edge_map = build_edge_map(chunks)
 
-        # path_grid = trace_path(start_top, edge_map)
-        path_grid = trace_path(start_bottom, edge_map)
-        print(path_grid)
+        path_grid = trace_path(start_chunk, edge_map)
+
         return path_grid, grid_size
+
+
+
+def find_starting_chunk(chunks, filename):
+    grid_size = len(chunks)
+    chunk_size = 420 // grid_size
+
+    template = cv2.imread(f'{TEMPLATE_DIR}/6-1.png')
+    solution = cv2.imread(filename)
+
+    template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
+    solution_gray = cv2.cvtColor(solution, cv2.COLOR_BGR2GRAY)
+
+    result = cv2.matchTemplate(
+        solution_gray,
+        template_gray,
+        cv2.TM_CCOEFF_NORMED
+    )
+
+    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+    threshold = 0.85
+    if max_val < threshold:
+        raise ValueError("Starting chunk not found with sufficient confidence")
+
+    x_px, y_px = max_loc 
+
+    t_h, t_w = template_gray.shape
+    cx = x_px + t_w // 2
+    cy = y_px + t_h // 2
+
+    col = cx // chunk_size
+    row = cy // chunk_size
+
+    if not (0 <= row < grid_size and 0 <= col < grid_size):
+        raise IndexError("Computed chunk index out of bounds")
+
+    return row, col
 
 
 
@@ -109,38 +148,45 @@ def build_edge_map(chunks):
     return edge_map
 
 
+import random
+
 def trace_path(start, edge_map):
     """
     Traces a single non-branching path through the grid.
-    
+
     Args:
-        start: dict with 'row', 'col', and 'edge' (entry edge)
+        start: (row, col) tuple
         edge_map: grid_size × grid_size × dict of {edge_dir: bool}
-    
+
     Returns:
-        list of (row, col) tuples in visit order, starting with the start position
+        list of (row, col) tuples in visit order
     """
     path = []
-    r, c = start["row"], start["col"]
-    entry_edge = OPPOSITE[start["edge"]]
-    
-    path.append((r, c))
 
+    r, c = start
+    entry_edge = None
+
+    path.append((r, c))
     grid_size = len(edge_map)
 
     while True:
         edges = edge_map[r][c]
-        
-        exit_edges = [
-            e for e, active in edges.items()
-            if active and e != entry_edge
-        ]
+
+        if entry_edge is None:
+            exit_edges = [e for e, active in edges.items() if active]
+        else:
+            exit_edges = [
+                e for e, active in edges.items()
+                if active and e != entry_edge
+            ]
 
         if not exit_edges:
             break
 
         if len(exit_edges) > 1:
-            raise RuntimeError("Branching path detected at ({}, {})".format(r, c))
+            raise RuntimeError(
+                f"Branching path detected at ({r}, {c})"
+            )
 
         exit_edge = exit_edges[0]
         dr, dc = DIRECTIONS[exit_edge]
@@ -150,9 +196,11 @@ def trace_path(start, edge_map):
             break
 
         r, c = nr, nc
-        entry_edge = OPPOSITE[exit_edge] 
-       
+        entry_edge = OPPOSITE[exit_edge]
+
         path.append((r, c))
+
+    print(path)
     return path
 
 def chunk_is_empty(chunk):
@@ -194,37 +242,5 @@ def chunk_edge_activity(chunk):
     active_count = sum(edges.values())
     return edges, active_count
 
-
-
-def find_starting_chunk(chunks, direction="top"):
-    """
-    Finds first non-empty chunk with exactly one active edge,
-    searching either from top or from bottom.
-    """
-    grid_size = len(chunks)
-    
-    for r in range(grid_size):
-        for c in range(grid_size):
-            chunk = [] 
-            if direction == "top":
-                chunk = chunks[r][c]
-            elif direction == "bottom":
-                chunk = chunks[grid_size - r - 1][grid_size - c - 1]
-
-            if chunk_is_empty(chunk):
-                continue
-                
-            edges, active_count = chunk_edge_activity(chunk)
-            print(edges, active_count)
-            
-            if active_count == 1:
-                edge = next(iter(k for k, v in edges.items() if v))
-
-                if direction == "top":
-                    return {"row": r, "col": c, "edge": edge}
-                if direction == "bottom":
-                    return {"row": grid_size - r - 1, "col": grid_size - c - 1, "edge": edge}
-                
-    return None
 
 

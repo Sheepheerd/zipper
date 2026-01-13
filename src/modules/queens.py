@@ -7,6 +7,7 @@ GRID_SIZE = 6
 WHITE_THRESHOLD = 0.95
 BLACK_THRESHOLD = 0.05
 
+TEMPLATE_DIR = 'templates/queens'
 
 class Queens:
     def build_instructions(self, filename):
@@ -24,10 +25,6 @@ def analyze_image(path):
 
     img = Image.open(path).convert("L")
     arr = np.asarray(img, dtype=np.float32) / 255.0
-
-
-
-
 
     grid_size = 0
     
@@ -61,11 +58,11 @@ def create_path(arr, grid_size, filename):
     path = []
 
     if grid_size == 7:
-        crown_template = 'images/9-crown.png'
+        crown_template = f'{TEMPLATE_DIR}/7-crown.png'
     elif grid_size == 8:
-        crown_template = 'images/8-crown.png'
+        crown_template = f'{TEMPLATE_DIR}/8-crown.png'
     elif grid_size == 9:
-        crown_template = 'images/9-crown.png'
+        crown_template = f'{TEMPLATE_DIR}/9-crown.png'
     else:
         raise ValueError("Undefined queens size")
 
