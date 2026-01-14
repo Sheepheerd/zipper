@@ -1,8 +1,13 @@
 import requests
 from datetime import datetime
+import os
 
 class Downloader:
     # Choice between "Zip", "queens", "Tango"
+    def cleanup(self, filename):
+        os.remove(filename)
+
+
     def download_image(self, choice: str):
         """
         choice can be of: "Zip", "queens", "Tango"
@@ -75,4 +80,6 @@ def download_helper(url, save_as):
     except Exception as e:
         print(f"Download error: {e}")
         return False
+
+
 

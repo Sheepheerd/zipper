@@ -14,6 +14,7 @@ def main():
     solver = Solver()
     downloader = Downloader()
     grid_size = 0
+    filename = ""
     if choice == "1":
         zip_mode = Zip()
         filename = downloader.download_image("Zip")
@@ -34,6 +35,7 @@ def main():
         return
 
     solver.solve(grid_path, grid_size)
+    downloader.cleanup(filename)
 
 
 
