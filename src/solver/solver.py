@@ -3,7 +3,7 @@ import subprocess
 import sys
 import time
 
-DELAY_BETWEEN_CLICKS = 0.025
+DELAY_BETWEEN_CLICKS = 0.01
 SCALE_FACTOR = 1.6
 
 

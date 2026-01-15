@@ -4,10 +4,6 @@ import cv2
 
 
 TARGET_SIZE = 420
-GRID_6 = 6
-GRID_7 = 7
-CHUNK_6 = 70
-CHUNK_7 = 60
 WHITE_THRESHOLD = 0.95
 
 TEMPLATE_DIR = 'templates/zip'
@@ -79,10 +75,6 @@ def find_starting_chunk(chunks, filename):
 
     return row, col
 
-
-
-
-
 def split_into_chunks(arr, grid_size):
     """
     Split the normalized image array into a grid of equally sized chunks.
@@ -119,7 +111,7 @@ def analyze_image(path):
 
     arr = np.asarray(img, dtype=np.float32) / 255.0
 
-    # middle of the image
+    # middle of the image, might need to fix if the zip can have images greater than 6 and 7 ;)
     x, y = 205, 205
 
     x = min(x, arr.shape[1] - 1)
@@ -142,13 +134,10 @@ def build_edge_map(chunks):
 
     for r in range(grid_size):
         for c in range(grid_size):
-            edges, active_count = chunk_edge_activity(chunks[r][c])
+            edges, _ = chunk_edge_activity(chunks[r][c])
             edge_map[r][c] = edges
 
     return edge_map
-
-
-import random
 
 def trace_path(start, edge_map):
     """
@@ -202,12 +191,6 @@ def trace_path(start, edge_map):
 
     print(path)
     return path
-
-def chunk_is_empty(chunk):
-    """
-    A chunk is considered empty if all its pixels are white.
-    """
-    return np.all(chunk >= WHITE_THRESHOLD)
 
 def chunk_edge_activity(chunk):
     """
