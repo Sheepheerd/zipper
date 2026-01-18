@@ -1,6 +1,17 @@
-# Zip
+# Linkedin Puzzle Solver
+If you try on these games, always know, someone else is faster
 
-Future RL project. Currently do not know enough about RL. Must read R. Sutton.
+## Dev Environment
+```bash
+nix develop
+```
 
-## Puzzle Generator
-This current generator is a python rip of [zip-puzzle-game](https://github.com/k4l397/zip-puzzle-game/tree/main/src)
+## Requirements
+- Must be on Linux and Wayland
+- Must have nix and flakes working
+
+## Supported Puzzles
+- Zip
+- Queens
+- Tango
+

@@ -23,12 +23,7 @@ class Solver:
         phys_x, phys_y, phys_w, phys_h = to_physical(log_x, log_y, log_w, log_h)
         print(f"Physical (real pixels)     : {phys_x},{phys_y}  {phys_w}×{phys_h}")
 
-
-        # WRAP IN FOR LOOP TO PRESS EACH COL IN THE CORRECT ORDER
-
-        # CHANGE THIS SO THAT IT LOOPS OVER EVERY PLACE TO CLICK, NOT GRIDE_SIZE
         for target_row, target_col in path_grid:
-            # CHANGE THIS SO THAT PATH_GRID IS REALLY A TUPLE OF (target_row, target_col) and the first value is the first place to click.
             click_x, click_y = get_grid_cell(
                 log_x, log_y, log_w, log_h,
                 grid_x=target_col,
@@ -72,7 +67,6 @@ def get_grid_cell(x: int, y: int, w: int, h: int, grid_x: int, grid_y: int, grid
     cell_w = w // grid_size
     cell_h = h // grid_size
     
-    # Center of the cell
     center_x = x + (grid_x * cell_w) + (cell_w // 2)
     center_y = y + (grid_y * cell_h) + (cell_h // 2)
     
