@@ -62,13 +62,13 @@
           # --------------------------------
           wayland-automation = python.pkgs.buildPythonPackage {
             pname = "wayland-automation";
-            version = "0.2.1";
+            version = "2.0.6";
 
             src = pkgs.fetchFromGitHub {
               owner = "OTAKUWeBer";
               repo = "Wayland-automation";
-              rev = "main";
-              hash = "sha256-r/gQMPmryEb7i8r26wwc4zfanu5Mwcw1srOnHxyDxsE=";
+              rev = "66763d7902ed770c0d9cdaacfc35911aacacea19";
+              hash = "sha256-hZXyybAJE4lYMF5zccLKk6a4PWlS6yKomjyV0Y4VWu8=";
             };
 
             pyproject = true;
