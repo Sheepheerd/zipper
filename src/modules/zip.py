@@ -4,7 +4,7 @@ import cv2
 
 
 TARGET_SIZE = 420
-WHITE_THRESHOLD = 0.95
+WHITE_THRESHOLD = 0.80
 
 TEMPLATE_DIR = 'templates/zip'
 
@@ -112,15 +112,28 @@ def analyze_image(path):
     arr = np.asarray(img, dtype=np.float32) / 255.0
 
     # middle of the image, might need to fix if the zip can have images greater than 6 and 7 ;)
-    x, y = 205, 205
+    x6, y6, = 203, 215
+    x7, y7 = 233, 178
+    x8, y8 = 94, 273
 
-    x = min(x, arr.shape[1] - 1)
-    y = min(y, arr.shape[0] - 1)
+    # x, y = 205, 205
+    # x2, y2 = 206, 179
 
-    if arr[205, 205] >= WHITE_THRESHOLD:
+    # x6 = min(x, arr.shape[1] - 1)
+    # y6 = min(y, arr.shape[0] - 1)
+    # x7 = min(x, arr.shape[1] - 1)
+    # y7 = min(y, arr.shape[0] - 1)
+    # x8 = min(x, arr.shape[1] - 1)
+    # y8 = min(y, arr.shape[0] - 1)
+
+    if arr[y8, x8] >= WHITE_THRESHOLD:
+        grid_size = 8
+    elif arr[y6, x6] >= WHITE_THRESHOLD:
         grid_size = 6
-    else:
+    elif arr[y7, x7] >= WHITE_THRESHOLD:
         grid_size = 7
+    else:
+        grid_size = 9
 
     return arr, grid_size
 
