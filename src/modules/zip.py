@@ -112,9 +112,9 @@ def analyze_image(path):
     arr = np.asarray(img, dtype=np.float32) / 255.0
 
     # middle of the image, might need to fix if the zip can have images greater than 6 and 7 ;)
-    x6, y6, = 203, 215
+    x6, y6, = 210, 203
     x7, y7 = 233, 178
-    x8, y8 = 94, 273
+    x8, y8 = 367, 213
 
     # x, y = 205, 205
     # x2, y2 = 206, 179
